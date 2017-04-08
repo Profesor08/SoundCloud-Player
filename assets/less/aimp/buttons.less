@@ -1,0 +1,69 @@
+.aimp {
+
+  .play, .next, .previous, .repeat, .shuffle {
+    width: 33px;
+    height: 100%;
+    background-color: #333333;
+    display: inline-block;
+    transition: ease-in-out all .1s;
+    vertical-align: top;
+  }
+
+  .play, .next, .previous {
+    &:hover {
+      background-color: #FF5500;
+      cursor: pointer;
+    }
+  }
+
+  .play {
+    width: 46px;
+    margin: 0 6px;
+    -webkit-mask: url(../images/aimp/play.svg) no-repeat center center;
+
+    &.pause {
+      -webkit-mask: url(../images/aimp/pause.svg) no-repeat center center;
+    }
+  }
+
+  .pause {
+    width: 46px;
+    margin: 0 6px;
+    -webkit-mask: url(../images/aimp/pause.svg) no-repeat center center;
+  }
+
+  .next {
+    -webkit-mask: url(../images/aimp/next.svg) no-repeat center center;
+  }
+
+  .previous {
+    -webkit-mask: url(../images/aimp/previous.svg) no-repeat center center;
+  }
+
+  .repeat {
+    width: 19px;
+    margin-left: 40px;
+    background-color: #888888;
+    -webkit-mask: url(../images/aimp/repeat.svg) no-repeat center center;
+  }
+
+  .shuffle {
+    width: 19px;
+    margin-left: 10px;
+    background-color: #888888;
+    -webkit-mask: url(../images/aimp/shuffle.svg) no-repeat center center;
+    -webkit-mask-size: 19px 16px;
+    -webkit-mask-position-y: 15px;
+  }
+
+  .repeat, .shuffle {
+    &:hover {
+      background-color: #555555;
+      cursor: pointer;
+    }
+
+    &.active {
+      background-color: #FF5500;
+    }
+  }
+}

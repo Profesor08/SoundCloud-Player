@@ -1,0 +1,119 @@
+.aimp {
+  .play-list {
+    position: absolute;
+    bottom: 46px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    background: #F2F2F2;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-bottom: 0;
+
+    .toggle-button {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%) scale(1, .3);
+      cursor: pointer;
+      font-size: 30px;
+      border: 1px solid rgba(0, 0, 0, .15);
+      background: #F2F2F2;
+      color: #666666;
+      padding: 1px 3px;
+    }
+
+    .play-list-content-wrapper {
+      overflow: hidden;
+    }
+
+    .track-list-wrapper {
+      overflow-x: hidden;
+      overflow-y: scroll;
+      max-height: 500px;
+
+      .active {
+        display: block;
+      }
+
+      .track {
+        border-bottom: 1px solid rgba(0, 0, 0, .08);
+        color: #666666;
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        font: 12px/1.4 "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Garuda, Verdana, Tahoma, sans-serif;
+        height: 32px;
+        padding: 2px 5px 2px 5px;
+
+        a {
+          color: inherit;
+          text-decoration: none;
+        }
+
+        .image {
+          margin-right: 10px;
+          position: relative;
+
+          .play-track {
+            background: #FF3300 no-repeat center center;
+            background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDYgMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPlBsYXkgMjA8L3RpdGxlPjxwYXRoIGQ9Ik0wIDEwbDEuMzg1LTVMMCAwbDYgNS02IDV6IiBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            opacity: 0;
+          }
+        }
+
+        .author {
+          color: #BBBBBB;
+
+          &:hover {
+            color: #333333;
+          }
+        }
+
+        .title {
+          color: #333333;
+
+          &:hover {
+            color: #000000;
+          }
+        }
+
+        &:last-child {
+          border: 0;
+        }
+
+        &:hover {
+          background: rgba(0, 0, 0, .03);
+          cursor: pointer;
+
+          .play-track {
+            opacity: 1;
+          }
+        }
+
+        &.playing {
+          background: rgba(0, 0, 0, .05);
+
+          .play-track {
+            background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSI5IiB2aWV3Qm94PSIwIDAgNiA5IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0aXRsZT5QYXVzZSAyMDwvdGl0bGU+PHBhdGggZD0iTTQgMHY5aDJWMEg0ek0wIDB2OWgyVjBIMHoiIGZpbGw9IiNGRkYiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==);
+          }
+
+          .play-track:not(:hover) {
+            animation: pulse-opacity 2000ms infinite;
+          }
+        }
+
+        &.playing.paused {
+          .play-track {
+            background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDYgMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPlBsYXkgMjA8L3RpdGxlPjxwYXRoIGQ9Ik0wIDEwbDEuMzg1LTVMMCAwbDYgNS02IDV6IiBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=);
+          }
+        }
+      }
+    }
+  }
+}

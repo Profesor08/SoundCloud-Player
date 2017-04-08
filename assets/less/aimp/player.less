@@ -1,0 +1,40 @@
+.aimp {
+  border-top: 1px solid rgba(0, 0, 0, .15);
+  position: fixed;
+  z-index: 20;
+  bottom: 0;
+  width: 100%;
+  background: #F2F2F2;
+  font-size: 0;
+  user-select: none;
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+  }
+
+  .aimp-wrapper {
+    height: 46px;
+    width: 960px;
+    position: relative;
+    margin: 0 auto;
+  }
+
+  .track-name {
+    position: absolute;
+    top: 3px;
+    font: 12px/1.4 "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Garuda, Verdana, Tahoma, sans-serif;
+    color: #666;
+    white-space: nowrap;
+    left: calc(~"50% + 105px");
+    transform: translateX(-50%);
+  }
+}
