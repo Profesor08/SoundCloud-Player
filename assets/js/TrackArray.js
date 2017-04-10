@@ -13,6 +13,7 @@ class TrackArray
   {
     this.id = 0;
     this.tracks = tracks;
+    this.randHistory = [];
   }
 
   /**
@@ -71,13 +72,25 @@ class TrackArray
    */
   previous()
   {
-    if (this.id > 0)
+    if (this.randHistory.length > 0)
     {
-      this.id--;
+      if (this.randHistory[this.randHistory.length - 1] === this.id)
+      {
+        this.randHistory.pop();
+      }
+
+      this.id = this.randHistory.pop();
     }
     else
     {
-      this.id = this.tracks.length - 1;
+      if (this.id > 0)
+      {
+        this.id--;
+      }
+      else
+      {
+        this.id = this.tracks.length - 1;
+      }
     }
 
     return this.tracks[this.id];
@@ -108,5 +121,27 @@ class TrackArray
   toArray()
   {
     return this.tracks;
+  }
+
+  getRandomTrack()
+  {
+    function rand(min, max)
+    {
+      return Math.floor(min + Math.random() * (max + 1 - min));
+    }
+
+    let id = 0;
+
+    do
+    {
+      id = rand(0, this.tracks.length - 1);
+    }
+    while(id === this.id);
+
+    this.id = id;
+
+    this.randHistory.push(this.id);
+
+    return this.tracks[this.id];
   }
 }

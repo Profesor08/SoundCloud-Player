@@ -9,13 +9,11 @@ class SoundCloud
   {
     this.config = {
       api_url: null,
-      client_id: null,
-      user_id: null
+      api_v2_url: null,
+      client_id: null
     };
 
     this.initialize(params);
-
-    this._url = new Url(this.config.api_url);
   }
 
   initialize(params)
@@ -32,44 +30,35 @@ class SoundCloud
     }
   }
 
-  get(path, callback)
+  async getLikes(user_id)
   {
-    let url = this._url
-      .path(path)
+    let url = new Url(this.config.api_url)
+      .path("/e1/users/" + user_id + "/likes")
       .query({
         "client_id": this.config.client_id,
         "format": "json",
-        "limit": 1000
+        "limit": 1000,
+        "date": Date.now()
       })
       .get();
 
-    http.get(url).then(result =>
-    {
-      callback(result);
-    })
-  }
+    let likes = await getJSON(url);
+    let tracks = [];
 
-  getLikes(callback)
-  {
-    this.get("/e1/users/" + this.config.user_id + "/likes", result =>
+    likes.forEach(like =>
     {
-      let tracks = [];
-
-      result.forEach(like =>
+      if (like.track !== null)
       {
-        if (like.track !== null)
-        {
-          tracks.push(like.track);
-        }
-      });
-
-      callback(tracks);
+        tracks.push(like.track);
+      }
     });
+
+    return tracks;
   }
 
-  setUser(profile_url, callback)
+  async setUser(profile_url)
   {
-    let url = this._url
+    let url = new Url(this.config.api_url)
       .path("resolve")
       .query({
         url: profile_url,
@@ -77,18 +66,7 @@ class SoundCloud
       })
       .get();
 
-    http.get(url).then(result =>
-    {
-      if (result.id)
-      {
-        this.config.user_id = result.id;
-      }
-
-      if (typeof callback === "function")
-      {
-        callback();
-      }
-    });
+    return await getJSON(url);
   }
 
 }

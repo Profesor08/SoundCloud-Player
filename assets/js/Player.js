@@ -16,9 +16,12 @@ class Player
     this.durationTime = null;
     this.progressBar = null;
     this.progressPoint = null;
-    this.playControl = null;
     this.playList = null;
     this.trackName = null;
+
+    this.shuffled = false;
+
+    this.buttons = {};
 
     this.selectedPlayListItem = null;
 
@@ -63,7 +66,9 @@ class Player
       firstLoad = false;
     });
 
-
+    /**
+     * When audio paused, will change class for playlist item
+     */
     this.audio.addEventListener("pause", () =>
     {
       if (this.selectedPlayListItem)
@@ -123,12 +128,18 @@ class Player
     this.initializePlayList();
   }
 
+  /**
+   * Initialize playlist
+   */
   initializePlayList()
   {
     if (this.playList)
     {
       this.playList.innerHTML = "";
 
+      /**
+       * Loading html template for each track and appending it to playlist container
+       */
       this.tracks.toArray().forEach((track, id) =>
       {
         let template = document.querySelector("#track-template");
@@ -143,6 +154,9 @@ class Player
         {
           event.preventDefault();
 
+          /**
+           * If click target is button .play-track, it will toggle play/pause state of current track
+           */
           if (this.selectedPlayListItem && event.target.isSameNode(this.selectedPlayListItem.querySelector(".play-track")))
           {
             if (this.audio.paused)
@@ -181,19 +195,18 @@ class Player
   }
 
   /**
-   * Initialization of player controls events and etc.
-   * @param controls
+   * Initialize main control buttons [play, playToggle, pause, stop. next, previous, loop, shuffle]
+   * @param buttons
    */
-  initializeControls(controls)
+  initButtons(buttons)
   {
+    this.buttons = buttons;
     /**
      * Player Play button events
      */
-    if (controls.playControl)
+    if (buttons.playToggle)
     {
-      this.playControl = controls.playControl;
-
-      this.playControl.addEventListener("click", () =>
+      this.buttons.playToggle.addEventListener("click", () =>
       {
         if (this.audio.paused)
         {
@@ -206,31 +219,93 @@ class Player
       });
     }
 
-    if (controls.next)
+    if (this.buttons.play)
     {
-      controls.next.addEventListener("click", e => this.next())
+      this.play();
     }
 
-    if (controls.previous)
+    if (this.buttons.pause)
     {
-      controls.previous.addEventListener("click", e => this.previous())
+      this.pause();
     }
 
-    if (controls.loopButton)
+    if (this.buttons.stop)
     {
-      controls.loopButton.addEventListener("click", () =>
+      this.stop();
+    }
+
+    if (this.buttons.next)
+    {
+      this.buttons.next.addEventListener("click", e => this.next())
+    }
+
+    if (this.buttons.previous)
+    {
+      this.buttons.previous.addEventListener("click", e => this.previous())
+    }
+
+    if (this.buttons.loop)
+    {
+      this.buttons.loop.addEventListener("click", () =>
       {
-        if (this.audio.loop)
-        {
-          controls.loopButton.classList.remove("active");
-          this.audio.loop = false;
-        }
-        else
-        {
-          controls.loopButton.classList.add("active");
-          this.audio.loop = true;
-        }
-      })
+        this.setLoop(!this.audio.loop);
+      });
+
+      this.setLoop(localStorage["loop"] === "true");
+    }
+
+    if (this.buttons.shuffle)
+    {
+      this.buttons.shuffle.addEventListener("click", () =>
+      {
+        this.setShuffle(!this.shuffled);
+      });
+
+      this.setShuffle(localStorage["shuffle"] === "true");
+    }
+  }
+
+  setLoop(value)
+  {
+    this.audio.loop = value;
+
+    if (value)
+    {
+      this.buttons.loop.classList.add("active");
+    }
+    else
+    {
+      this.buttons.loop.classList.remove("active");
+    }
+
+    localStorage["loop"] = value;
+  }
+
+  setShuffle(value)
+  {
+    this.shuffled = value;
+
+    if (value)
+    {
+      this.buttons.shuffle.classList.add("active");
+    }
+    else
+    {
+      this.buttons.shuffle.classList.remove("active");
+    }
+
+    localStorage["shuffle"] = value;
+  }
+
+  /**
+   * Initialization of player controls events and etc.
+   * @param controls
+   */
+  initializeControls(controls)
+  {
+    if (controls.buttons)
+    {
+      this.initButtons(controls.buttons);
     }
 
     if (controls["artwork-500"])
@@ -351,9 +426,18 @@ class Player
       this.trackName = controls.trackName;
     }
 
+    if (controls.shuffleButton)
+    {
+      this.initializeShuffle(controls.shuffleButton);
+    }
+
     this.initializeVolumeControl(controls.volumeControl);
   }
 
+  initializeShuffle(button)
+  {
+    this.shuffleButton = button;
+  }
 
   initializeVolumeControl(control)
   {
@@ -388,14 +472,7 @@ class Player
             this.setVolume(0);
           }
 
-          if (this.audio.volume === 0)
-          {
-            this.volumeControl.button.classList.add("muted");
-          }
-          else
-          {
-            this.volumeControl.button.classList.remove("muted");
-          }
+          this.updateVolumeControl(this.audio.volume);
         }
       });
 
@@ -435,18 +512,61 @@ class Player
         drag: result =>
         {
           let height = control.container.clientHeight;
-          let volume = (100 - parseInt(result.y / (height / 100))) / 100;
-          control.bar.style.height = height - result.y + "px";
+          let volume = (100 - result.y / (height / 100)) / 100;
           localStorage["volume"] = volume;
+          this.updateVolumeControl(volume);
           this.setVolume(volume);
         }
       });
 
-      let volumePosition = this.audio.volume * 100;
-      control.point.style.top = control.container.clientHeight - volumePosition + "px";
-      control.bar.style.height = volumePosition + "px";
     }
 
+    this.updateVolumeControl(this.audio.volume);
+
+  }
+
+  /**
+   * Update state of volume control
+   * @param volume - audio volume value from 0 to 1
+   */
+  updateVolumeControl(volume)
+  {
+    if (this.volumeControl.container)
+    {
+      let height = this.volumeControl.container.clientHeight;
+      let position = height * volume;
+
+      if (this.volumeControl.bar)
+      {
+        this.volumeControl.bar.style.height = position + "px";
+      }
+
+      if (this.volumeControl.point)
+      {
+        this.volumeControl.point.style.top = height - position + "px";
+      }
+
+      if (this.volumeControl.button)
+      {
+        if (volume === 0)
+        {
+          this.volumeControl.button.classList.add("muted");
+        }
+        else
+        {
+          this.volumeControl.button.classList.remove("muted");
+        }
+      }
+    }
+  }
+
+  /**
+   * Set audio volume
+   * @param volume - value from 0 to 1
+   */
+  setVolume(volume)
+  {
+    this.audio.volume = volume;
   }
 
   play()
@@ -460,9 +580,9 @@ class Player
       this.setTrack(this.tracks.get());
     }
 
-    if (this.playControl)
+    if (this.buttons.playToggle)
     {
-      this.playControl.classList.add("pause");
+      this.buttons.playToggle.classList.add("pause");
     }
 
     if (this.selectedPlayListItem)
@@ -475,9 +595,9 @@ class Player
   {
     this.audio.pause();
 
-    if (this.playControl)
+    if (this.buttons.playToggle)
     {
-      this.playControl.classList.remove("pause");
+      this.buttons.playToggle.classList.remove("pause");
     }
   }
 
@@ -489,7 +609,14 @@ class Player
 
   next()
   {
-    this.setTrack(this.tracks.next());
+    if (this.shuffled)
+    {
+      this.setTrack(this.tracks.getRandomTrack());
+    }
+    else
+    {
+      this.setTrack(this.tracks.next());
+    }
   }
 
   previous()
@@ -629,11 +756,6 @@ class Player
   setTime(time)
   {
     this.audio.currentTime = time;
-  }
-
-  setVolume(volume)
-  {
-    this.audio.volume = volume;
   }
 
   /**
