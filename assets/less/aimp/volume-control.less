@@ -7,6 +7,7 @@
     background: url(../images/aimp/volume.svg) no-repeat center center;
     cursor: pointer;
     position: relative;
+    overflow: hidden;
 
     &.muted {
       background: url(../images/aimp/volume-muted.svg) no-repeat 8px center;
@@ -15,17 +16,15 @@
     .volume-slider {
       position: absolute;
       left: -1px;
-      bottom: 40px;
+      bottom: 100%;
       z-index: 10;
-      width: 30px;
+      width: 100%;
       height: 126px;
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-      overflow: hidden;
       background-color: #f2f2f2;
       border: 1px solid transparent;
       outline: 0;
       cursor: pointer;
+      opacity: 0;
 
       &:before {
         content: "";
@@ -124,9 +123,10 @@
     }
 
     &:hover, &.active {
+      overflow: initial;
       .volume-slider {
         box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
-        overflow: initial;
+        opacity: 1;
       }
     }
   }

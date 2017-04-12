@@ -19,7 +19,14 @@ class Url
 
   path(path)
   {
-    this.pathString += "/" + path.ltrim("/").rtrim("/");
+    if(typeof path !== "number")
+    {
+      this.pathString += "/" + path.ltrim("/").rtrim("/");
+    }
+    else
+    {
+      this.pathString += "/" + path;
+    }
 
     return this;
   }

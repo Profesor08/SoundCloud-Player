@@ -86,32 +86,43 @@ class Draggable
       }
     });
 
+    // this.element.addEventListener("touchmove", event =>
+    // {
+    //   console.log(event);
+    //   this._move(event, this.config.container.getBoundingClientRect());
+    // });
+
     document.addEventListener("mousemove", event =>
     {
       if (isDragging)
       {
-        let x = this._fixPosition(event.clientX - rect.left, 0, rect.width);
-        let y = this._fixPosition(event.clientY - rect.top, 0, rect.height);
-
-        if (this.config.axisX)
-        {
-          this.element.style.left = x + "px";
-        }
-
-        if (this.config.axisY)
-        {
-          this.element.style.top = y + "px";
-        }
-
-        if (typeof this.config.drag === "function")
-        {
-          this.config.drag({
-            x: x,
-            y: y
-          });
-        }
+        this._move(event, rect);
       }
     });
+  }
+
+  _move(event, rect)
+  {
+    let x = this._fixPosition(event.clientX - rect.left, 0, rect.width);
+    let y = this._fixPosition(event.clientY - rect.top, 0, rect.height);
+
+    if (this.config.axisX)
+    {
+      this.element.style.left = x + "px";
+    }
+
+    if (this.config.axisY)
+    {
+      this.element.style.top = y + "px";
+    }
+
+    if (typeof this.config.drag === "function")
+    {
+      this.config.drag({
+        x: x,
+        y: y
+      });
+    }
   }
 
   _fixPosition(value, min, max)

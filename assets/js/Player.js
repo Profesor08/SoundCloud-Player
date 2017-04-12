@@ -9,28 +9,35 @@ class Player
   constructor(client_id)
   {
     this.client_id = client_id;
+    this.audio = null;
+    this.tracks = null;
 
-    this.tracks = [];
+    this.buttons = {};
+    this.progressControl = {};
+    this.volumeControl = {};
+    this.waveformContainer = null;
+
+    this.selectedPlayListItem = null;
+
     this["artwork-500"] = null;
     this.playTime = null;
     this.durationTime = null;
-    this.progressBar = null;
-    this.progressPoint = null;
     this.playList = null;
     this.trackName = null;
 
     this.shuffled = false;
 
-    this.buttons = {};
-
-    this.selectedPlayListItem = null;
-
     this.progressPointDrag = false;
-    this.volumePointDrag = false;
 
-    this.audio = null;
+    this.loop = false;
+    this.waveform = null;
 
     this._initAudio();
+
+    this.watch("tracks", function (id, oldVal, newVal)
+    {
+      return newVal;
+    });
   }
 
   /**
@@ -44,7 +51,12 @@ class Player
 
     if ("volume" in localStorage)
     {
-      this.setVolume(parseFloat(localStorage["volume"]));
+      let volume = parseFloat(localStorage["volume"]);
+
+      if (volume >= 0 && volume <= 1)
+      {
+        this.setVolume(parseFloat(localStorage["volume"]));
+      }
     }
     else
     {
@@ -99,7 +111,14 @@ class Player
      */
     this.audio.addEventListener("ended", () =>
     {
-      this.setTrack(this.tracks.next());
+      if (this.loop)
+      {
+        this.setTrack(this.tracks.get());
+      }
+      else
+      {
+        this.setTrack(this.tracks.next());
+      }
     });
 
     /**
@@ -115,7 +134,7 @@ class Player
    * Initializing player with tracks
    * @param {Track[]} tracks
    */
-  initialize(tracks)
+  setTracks(tracks)
   {
     this.tracks = new TrackArray(tracks);
 
@@ -248,7 +267,7 @@ class Player
     {
       this.buttons.loop.addEventListener("click", () =>
       {
-        this.setLoop(!this.audio.loop);
+        this.setLoop(!this.loop);
       });
 
       this.setLoop(localStorage["loop"] === "true");
@@ -267,7 +286,7 @@ class Player
 
   setLoop(value)
   {
-    this.audio.loop = value;
+    this.loop = value;
 
     if (value)
     {
@@ -333,54 +352,6 @@ class Player
       this.playList = controls.playList;
     }
 
-    if (controls.timeLine)
-    {
-      this.timeLine = controls.timeLine;
-
-      this.timeLine.addEventListener("mousedown", event =>
-      {
-        if (event.target !== this.progressPoint && this.audio.duration)
-        {
-          let x = event.layerX;
-          let time = parseInt(parseInt(this.audio.duration) / 100 * (x / (this.timeLine.clientWidth / 100)));
-
-          this.setTime(time);
-          this.play();
-        }
-      })
-    }
-
-    if (controls.progressPoint)
-    {
-      this.progressPoint = controls.progressPoint;
-
-      new Draggable(this.progressPoint, {
-        handle: this.progressPoint,
-        container: this.progressPoint.parentNode,
-        axisX: true,
-
-        dragstart: () =>
-        {
-          this.progressPointDrag = true;
-          this.progressPoint.classList.add("active");
-        },
-
-        dragstop: () =>
-        {
-          this.progressPointDrag = false;
-          this.progressPoint.classList.remove("active");
-        },
-
-        drag: result =>
-        {
-          this.progressBar.style.width = result.x + "px";
-          let time = parseInt(parseInt(this.audio.duration) / 100 * (result.x / (this.timeLine.clientWidth / 100)));
-          this.setTime(time);
-        }
-      });
-
-    }
-
     if (controls.allowSpaceBarControl)
     {
       let keyDown = false;
@@ -431,7 +402,70 @@ class Player
       this.initializeShuffle(controls.shuffleButton);
     }
 
-    this.initializeVolumeControl(controls.volumeControl);
+    if (controls.volumeControl)
+    {
+      this.initializeVolumeControl(controls.volumeControl);
+    }
+
+    if (controls.progressControl)
+    {
+      this.initializeProgressControl(controls.progressControl);
+    }
+
+    if (controls.waveformContainer)
+    {
+      this.waveformContainer = controls.waveformContainer;
+    }
+  }
+
+  initializeProgressControl(control)
+  {
+    this.progressControl = control;
+
+    if (control.container)
+    {
+      control.container.addEventListener("mousedown", event =>
+      {
+        if (event.button === 0 && event.target !== this.progressPoint && this.audio.duration)
+        {
+          let x = event.layerX;
+          let time = parseInt(parseInt(this.audio.duration) / 100 * (x / (control.container.clientWidth / 100)));
+
+          this.setTime(time);
+          this.play();
+        }
+      })
+    }
+
+    if (control.point)
+    {
+      new Draggable(control.point, {
+        handle: control.handle,
+        container: control.container,
+        axisX: true,
+
+        dragstart: () =>
+        {
+          this.progressPointDrag = true;
+          control.point.classList.add("active");
+        },
+
+        dragstop: () =>
+        {
+          this.progressPointDrag = false;
+          control.point.classList.remove("active");
+        },
+
+        drag: result =>
+        {
+          control.bar.style.width = result.x + "px";
+          let time = parseInt(parseInt(this.audio.duration) / 100 * (result.x / (control.container.clientWidth / 100)));
+          this.setTime(time);
+        }
+      });
+    }
+
+
   }
 
   initializeShuffle(button)
@@ -650,15 +684,31 @@ class Player
     {
       if (Number.isInteger(value))
       {
-        this.progressBar.style.width = "0%";
+        if (this.progressControl.bar)
+        {
+          this.progressControl.bar.style.width = "0%";
+        }
       }
       else
       {
         let p = this.audio.currentTime / (this.audio.duration / 100);
-        this.progressBar.style.width = p + "%";
+
+        if (this.progressControl.bar)
+        {
+          this.progressControl.bar.style.width = p + "%";
+        }
+
+        if (this.waveform)
+        {
+          this.waveform.setPlayback(p);
+        }
+
       }
 
-      this.progressPoint.style.left = this.progressBar.offsetWidth + "px";
+      if (this.progressControl.bar && this.progressControl.point)
+      {
+        this.progressControl.point.style.left = this.progressControl.bar.offsetWidth + "px";
+      }
     }
   }
 
@@ -744,6 +794,27 @@ class Player
     if (this.trackName)
     {
       this.trackName.innerText = track.title;
+    }
+
+    if (this.waveformContainer)
+    {
+      let url = track.waveform_url.replace(/png/, "json");
+
+      (async () =>
+      {
+        let data = await getJSON(url);
+
+        if (this.waveform)
+        {
+          this.waveform.update(data.samples);
+        }
+        else
+        {
+          this.waveform = new Waveform(this.waveformContainer, data.samples);
+        }
+
+
+      })();
     }
 
     localStorage["lastPlayedTrack"] = track.id;

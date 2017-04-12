@@ -33,7 +33,10 @@ class SoundCloud
   async getLikes(user_id)
   {
     let url = new Url(this.config.api_url)
-      .path("/e1/users/" + user_id + "/likes")
+      .path("e1")
+      .path("users")
+      .path(user_id)
+      .path("likes")
       .query({
         "client_id": this.config.client_id,
         "format": "json",
@@ -43,17 +46,12 @@ class SoundCloud
       .get();
 
     let likes = await getJSON(url);
-    let tracks = [];
 
-    likes.forEach(like =>
-    {
-      if (like.track !== null)
-      {
-        tracks.push(like.track);
-      }
-    });
-
-    return tracks;
+    return likes.filter(
+      like => like.track !== null
+    ).map(
+      like => like.track
+    );
   }
 
   async setUser(profile_url)
