@@ -1,7 +1,26 @@
-html, body {
+@-ms-viewport{
+  width: device-width;
+}
+
+html {
+  width:100%;
+  height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+}
+
+body {
+  width:100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position:fixed; /* prevent overscroll bounce*/
+  background-color: lightgreen;
+  //-webkit-overflow-scrolling: touch; /* iOS velocity scrolling */
+  //-webkit-text-size-adjust: 100%;
+  font: 12px/1.4 "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Garuda, Verdana, Tahoma, sans-serif;
 }
 
 html *, body * {
@@ -26,5 +45,5 @@ body {
 @import "aimp/progress-bar";
 @import "aimp/play-list";
 @import "aimp/animations";
-@import "aimp/adaptive";
+@import "aimp/responsive";
 

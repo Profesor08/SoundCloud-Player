@@ -82,13 +82,5 @@ const http = {
 
 async function getJSON(url)
 {
-  try
-  {
-    return JSON.parse(await http.get(url));
-  }
-  catch(err)
-  {
-    console.log(err);
-    return [];
-  }
+  return JSON.parse(await http.get(url));
 }

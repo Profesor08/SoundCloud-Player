@@ -86,11 +86,10 @@ class Draggable
       }
     });
 
-    // this.element.addEventListener("touchmove", event =>
-    // {
-    //   console.log(event);
-    //   this._move(event, this.config.container.getBoundingClientRect());
-    // });
+    this.element.addEventListener("touchmove", event =>
+    {
+      this._move(event, this.config.container.getBoundingClientRect());
+    });
 
     document.addEventListener("mousemove", event =>
     {
@@ -103,8 +102,21 @@ class Draggable
 
   _move(event, rect)
   {
-    let x = this._fixPosition(event.clientX - rect.left, 0, rect.width);
-    let y = this._fixPosition(event.clientY - rect.top, 0, rect.height);
+    console.log(event);
+
+    let x, y;
+
+    if (event instanceof MouseEvent)
+    {
+      x = this._fixPosition(event.clientX - rect.left, 0, rect.width);
+      y = this._fixPosition(event.clientY - rect.top, 0, rect.height);
+    }
+    else if (event instanceof TouchEvent)
+    {
+      x = this._fixPosition(event.targetTouches[0].clientX - rect.left, 0, rect.width);
+      y = this._fixPosition(event.targetTouches[0].clientY - rect.top, 0, rect.height);
+    }
+
 
     if (this.config.axisX)
     {

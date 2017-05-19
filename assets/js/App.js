@@ -55,17 +55,17 @@ require([
   const player = new Player(CLIENT_ID);
 
   player.initializeControls({
-    "artwork-500": document.body,
+    "artwork-500": document.querySelector("#playlist-123"),
     playTime: document.querySelector(".aimp .play-time"),
     durationTime: document.querySelector(".aimp .track-length"),
-    playList: document.querySelector(".aimp #playlist-123"),
+    playList: document.querySelector("#playlist-123"),
 
-    progressControl: {
-      container: document.querySelector(".aimp .time-line"),
-      bar: document.querySelector(".aimp .progress-bar"),
-      point: document.querySelector(".aimp .progress-point"),
-      handle: document.querySelector(".aimp .progress-point-handle")
-    },
+    // progressControl: {
+    //   container: document.querySelector(".aimp .waveform"),
+    //   bar: document.querySelector(".aimp .progress-bar"),
+    //   point: document.querySelector(".aimp .progress-point"),
+    //   handle: document.querySelector(".aimp .progress-point-handle")
+    // },
 
     buttons: {
       playToggle: document.querySelector(".aimp .play"),
@@ -98,12 +98,29 @@ require([
   (async () =>
   {
     let user = await sc.setUser("https://soundcloud.com/profesor08");
-    let tracks = await sc.getLikes(user.id);
+    let tracks;
+
+    while(true)
+    {
+      try
+      {
+        tracks = await sc.getLikes(user.id);
+        break;
+      }
+      catch(e)
+      {
+
+      }
+    }
+
+    player.addEventListener("setTrack", function (track)
+    {
+      document.title = track.title + " - Soundcloud Player";
+    });
+
     player.setTracks(tracks);
 
-
-
-    let waveData = await getJSON("https://w1.sndcdn.com/xVZOcTTWrxao_m.json");
+    // let waveData = await getJSON("https://w1.sndcdn.com/xVZOcTTWrxao_m.json");
 
 
 

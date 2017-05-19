@@ -3,67 +3,96 @@
   .play, .next, .previous, .repeat, .shuffle {
     width: 33px;
     height: 100%;
-    background-color: #333333;
-    display: inline-block;
     transition: ease-in-out all .1s;
-    vertical-align: top;
-  }
+    background: no-repeat center center;
+    background-size: 60%;
+    margin: 0 1vh;
 
-  .play, .next, .previous {
     &:hover {
-      background-color: #FF5500;
       cursor: pointer;
     }
   }
 
   .play {
-    width: 46px;
-    margin: 0 6px;
-    -webkit-mask: url(../images/aimp/play.svg) no-repeat center center;
+    background-image: url(../images/aimp/play.svg);
 
-    &.pause {
-      -webkit-mask: url(../images/aimp/pause.svg) no-repeat center center;
+    &:hover {
+      background-image: url(../images/aimp/play-hover.svg);
     }
   }
 
   .pause {
-    width: 46px;
-    margin: 0 6px;
-    -webkit-mask: url(../images/aimp/pause.svg) no-repeat center center;
-  }
+    background-image: url(../images/aimp/pause.svg);
 
-  .next {
-    -webkit-mask: url(../images/aimp/next.svg) no-repeat center center;
+    &:hover {
+      background-image: url(../images/aimp/pause-hover.svg);
+    }
   }
 
   .previous {
-    -webkit-mask: url(../images/aimp/previous.svg) no-repeat center center;
+    background-image: url(../images/aimp/previous.svg);
+
+    &:hover {
+      background-image: url(../images/aimp/previous-hover.svg);
+    }
+  }
+
+  .next {
+    background-image: url(../images/aimp/next.svg);
+
+    &:hover {
+      background-image: url(../images/aimp/next-hover.svg);
+    }
   }
 
   .repeat {
-    width: 19px;
-    margin-left: 40px;
-    background-color: #888888;
-    -webkit-mask: url(../images/aimp/repeat.svg) no-repeat center center;
-  }
+    background-image: url(../images/aimp/repeat.svg);
+    margin: 0;
 
-  .shuffle {
-    width: 19px;
-    margin-left: 10px;
-    background-color: #888888;
-    -webkit-mask: url(../images/aimp/shuffle.svg) no-repeat center center;
-    -webkit-mask-size: 19px 16px;
-    -webkit-mask-position-y: 15px;
-  }
-
-  .repeat, .shuffle {
     &:hover {
-      background-color: #555555;
-      cursor: pointer;
+      background-image: url(../images/aimp/repeat-hover.svg);
     }
 
     &.active {
-      background-color: #FF5500;
+      background-image: url(../images/aimp/repeat-active.svg);
     }
   }
-}
+
+  .shuffle {
+    background-image: url(../images/aimp/shuffle.svg);
+    margin: 0;
+
+    &:hover {
+      background-image: url(../images/aimp/shuffle-hover.svg);
+    }
+
+    &.active {
+      background-image: url(../images/aimp/shuffle-active.svg);
+    }
+  }
+
+  .previous {
+    order: 1;
+  }
+
+  .play {
+    order: 2;
+  }
+
+  .pause {
+    order: 2;
+  }
+
+  .next {
+    order: 3;
+  }
+
+  .repeat {
+    order: 4;
+  }
+
+  .shuffle {
+    order: 5;
+  }
+
+ }

@@ -5,56 +5,58 @@
   opacity: .8;
   transition: ease-in-out opacity 200ms;
 
+  width: 80%;
+
   &:hover {
     opacity: 1;
   }
 }
 
-
+.vertical-align(@align, @font) {
+  &:before {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    vertical-align: @align;
+    // you can add font-size 0 here and restore in the children to prevent
+    // the inline-block white-space to mess the width of your elements
+    font-size: 0;
+  }
+  & > * {
+    vertical-align: @align;
+    // although you need to know the font-size, because "inherit" is 0
+    font-size: @font;
+  }
+}
 
 .aimp {
 
-
-
-
-
-
-
-
+  .play-time, .track-length {
+    font-size: 1.7vh;
+    margin: 0 1vh;
+    color: #333333;
+    .vertical-align(middle, 1.7vh);
+  }
 
   .play-time {
     color: #FF5500;
-    font-size: 11px;
-    display: inline-block;
-    line-height: 46px;
-    vertical-align: middle;
-    width: 70px;
     text-align: right;
   }
 
-  .track-length {
-    color: #333333;
-    font-size: 11px;
-    display: inline-block;
-    line-height: 46px;
-    width: 65px;
-    vertical-align: middle;
-  }
-
-  .track-length, .play-time {
-    padding-top: 1px;
-  }
-
   .time-line {
-    display: inline-block;
     position: relative;
-    //padding: 10px 0;
-    //margin: 0 10px;
+    order: 6;
 
-    vertical-align: top;
-    width: 550px;
-    margin: 2px 2px 10px 2px;
-    height: calc(~"100% - 10px");
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: stretch;
+    align-content: flex-start;
+
+    width: 70%;
+    //margin: 1vh 0;
+    height: 70%;
 
     &:hover {
       cursor: pointer;

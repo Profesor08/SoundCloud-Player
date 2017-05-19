@@ -1,11 +1,7 @@
 .aimp {
-  border-top: 1px solid rgba(0, 0, 0, .15);
-  position: fixed;
-  z-index: 20;
-  bottom: 0;
   width: 100%;
+  height: 100%;
   background: #F2F2F2;
-  font-size: 0;
   user-select: none;
 
   ::-webkit-scrollbar {
@@ -21,17 +17,29 @@
     outline: 1px solid slategrey;
   }
 
-  .aimp-wrapper {
-    height: 46px;
-    width: 960px;
-    position: relative;
+  .controls-wrapper {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+  }
+
+  .controls-container {
+    height: 6vh;
+    //width: 960px;
     margin: 0 auto;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: flex-start;
   }
 
   .track-name {
     position: absolute;
     top: 3px;
-    font: 12px/1.4 "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Garuda, Verdana, Tahoma, sans-serif;
     color: #666;
     white-space: nowrap;
     left: calc(~"50% + 105px");

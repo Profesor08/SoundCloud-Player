@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <title>SoundCloud API</title>
   
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">-->
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
   
   <link href="assets/images/sc-icons/favicon-2cadd14b.ico" rel="icon">
   <link href="assets/images/sc-icons/ios-a62dfc8f.png" rel="apple-touch-icon">
   <link href="assets/images/sc-icons/fluid-b4e7a64b.png" rel="fluid-icon">
   
+  <link rel="stylesheet" type="text/css" href="assets/css/normalize.css">
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
   
   <template id="track-template">
@@ -28,48 +30,49 @@
 <body>
 
 
-<div class="artwork-500"></div>
 
 <div class="aimp">
-  <div class="aimp-wrapper">
-    <div class="previous"></div>
-    <div class="play"></div>
-    <div class="next"></div>
-    <div class="repeat"></div>
-    <div class="shuffle"></div>
-    <div class="play-time">0:00</div>
-    <div class="time-line">
-      <div class="waveform"></div>
-      <!--<div class="progress-background">-->
+  
+  
+  <div class="play-list">
+    <div class="play-list-content-wrapper hidden">
+      <div class="play-lists">
+        <div id="playlist-123" class="track-list-wrapper"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="controls-wrapper">
+    <div class="controls-container">
+      <div class="previous"></div>
+      <div class="play"></div>
+      <div class="next"></div>
+      <div class="repeat"></div>
+      <div class="shuffle"></div>
+      <div class="time-line">
+        <div class="play-time">0:00</div>
+        <div class="waveform"></div>
+        <!--<div class="progress-background">-->
         <!--<div class="progress-bar"></div>-->
         <!--<div class="progress-point">-->
-          <!--<div class="progress-point-handle"></div>-->
+        <!--<div class="progress-point-handle"></div>-->
         <!--</div>-->
-      <!--</div>-->
-    </div>
-    <div class="track-length">0:00</div>
-    <div class="volume">
-      <div class="volume-slider">
-        <div class="volume-bg-wrapper">
-          <div class="volume-background">
-            <div class="volume-progress-bar"></div>
-            <div class="volume-progress-point">
-              <div class="volume-point-handle"></div>
+        <!--</div>-->
+        <div class="track-length">0:00</div>
+      </div>
+      <div class="volume">
+        <div class="volume-slider">
+          <div class="volume-bg-wrapper">
+            <div class="volume-background">
+              <div class="volume-progress-bar"></div>
+              <div class="volume-progress-point">
+                <div class="volume-point-handle"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="track-name"></div>
-    <div class="play-list">
-      <div class="play-list-content-wrapper hidden">
-        <div class="play-lists-buttons">
-        
-        </div>
-        <div class="play-lists">
-          <div id="playlist-123" class="track-list-wrapper"></div>
-        </div>
-      </div>
+      <div class="track-name"></div>
     </div>
   </div>
 </div>

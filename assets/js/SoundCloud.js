@@ -64,7 +64,7 @@ class SoundCloud
       })
       .get();
 
-    return await getJSON(url);
+    return getJSON(url);
   }
 
 }

@@ -32,6 +32,10 @@ class Player
     this.loop = false;
     this.waveform = null;
 
+    this.events = {
+      setTrack: []
+    };
+
     this._initAudio();
 
     this.watch("tracks", function (id, oldVal, newVal)
@@ -194,7 +198,20 @@ class Player
         });
 
         let img = div.querySelector(".image img");
-        img.src = track.artwork_url.replace(/large/, "small");
+        /**
+         * t500x500: 500×500
+         * crop: 400×400
+         * t300x300: 300×300
+         * large: 100×100 (default)
+         * t67x67: 67×67 (only on artworks)
+         * badge: 47×47
+         * small: 32×32
+         * tiny: 20×20 (on artworks)
+         * tiny: 18×18 (on avatars)
+         * mini: 16×16
+         */
+        // img.src = track.artwork_url.replace(/large/, "small");
+        img.src = track.artwork_url.replace(/large/, "badge");
 
         let author = div.querySelector(".info .author a");
         author.innerText = track.user.username;
@@ -477,39 +494,8 @@ class Player
   {
     this.volumeControl = control;
 
-    /**
-     * Init volume button, on click it will toggle muted state of audio
-     * If audio volume was 0 on load, it will set volume to 1
-     */
     if (control.button)
     {
-      let defaultVolume = 0;
-
-      control.button.addEventListener("click", event =>
-      {
-        if (control.button === event.target)
-        {
-          if (this.audio.volume === 0)
-          {
-            if (defaultVolume === 0)
-            {
-              this.setVolume(1);
-            }
-            else
-            {
-              this.setVolume(defaultVolume);
-            }
-          }
-          else
-          {
-            defaultVolume = this.audio.volume;
-            this.setVolume(0);
-          }
-
-          this.updateVolumeControl(this.audio.volume);
-        }
-      });
-
       if (this.audio.volume === 0)
       {
         this.volumeControl.button.classList.add("muted");
@@ -806,11 +792,38 @@ class Player
 
         if (this.waveform)
         {
-          this.waveform.update(data.samples);
+          this.waveform.updateWaveformData(data.samples);
         }
         else
         {
-          this.waveform = new Waveform(this.waveformContainer, data.samples);
+          // this.waveform = new Waveform(this.waveformContainer, data.samples);
+          this.waveform = new Waveform({
+            container: this.waveformContainer,
+            audio: this.audio,
+            data: data.samples,
+            peakWidth: 2,
+            peakSpace: 1,
+            responsive: true,
+            mouseOverEvents: true,
+            mouseClickEvents: true,
+            color: {
+              background: "#8C8C8C",
+              footer: "#B2B2B2",
+              footerPlayback: "#FFAA80",
+              hoverGradient: {
+                from: "#FF7200",
+                to: "#DA4218"
+              },
+              playbackGradient: {
+                from: "#FF7200",
+                to: "#DA4218"
+              },
+              hoverPlaybackGradient: {
+                from: "#AB5D20",
+                to: "#A84024"
+              }
+            }
+          });
         }
 
 
@@ -818,6 +831,27 @@ class Player
     }
 
     localStorage["lastPlayedTrack"] = track.id;
+
+    this.emitEvent("setTrack", [track]);
+  }
+
+  emitEvent(event, args)
+  {
+    if (event in this.events)
+    {
+      this.events[event].forEach(callback =>
+      {
+        callback.apply(this, args);
+      });
+    }
+  }
+
+  addEventListener(event, callback)
+  {
+    if (event in this.events)
+    {
+      this.events[event].push(callback);
+    }
   }
 
   /**
