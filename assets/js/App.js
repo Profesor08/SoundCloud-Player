@@ -49,8 +49,8 @@ require([
 ], () =>
 {
 
-  // const CLIENT_ID = "e9f897e4636fc2682a1c243b511d30b8";
-  const CLIENT_ID = "2t9loNQH90kzJcsFCODdigxfp325aq4z";
+  const CLIENT_ID = "e9f897e4636fc2682a1c243b511d30b8";
+  // const CLIENT_ID = "2t9loNQH90kzJcsFCODdigxfp325aq4z";
 
   const player = new Player(CLIENT_ID);
 

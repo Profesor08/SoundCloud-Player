@@ -211,7 +211,13 @@ class Player
          * mini: 16×16
          */
         // img.src = track.artwork_url.replace(/large/, "small");
-        img.src = track.artwork_url.replace(/large/, "badge");
+
+        try {
+          img.src = track.artwork_url.replace(/large/, "badge");
+        }
+        catch(err) {
+          img.src = track.user.avatar_url;
+        }
 
         let author = div.querySelector(".info .author a");
         author.innerText = track.user.username;
